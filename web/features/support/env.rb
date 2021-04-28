@@ -18,17 +18,15 @@ when "chrome_headless"
   # O código abaixo foi retirado do código-fonted o Capybara no Github e foi ajustado para funcionar com o "ruby web agent"
   # que vamos usar para rodar os testes no Jenkins
   Capybara.register_driver :selenium_chrome_headless do |app|
-    version = Capybara::Selenium::Driver.load_selenium
-    options_key = Capybara::Selenium::Driver::CAPS_VERSION.satisfied_by?(version) ? :capabilities : :options
+    Capybara::Selenium::Driver.load_selenium
     browser_options = ::Selenium::WebDriver::Chrome::Options.new.tap do |opts|
-      opts.add_argument("--headless")
-      opts.add_argument("--disable-gpu")
-      opts.add_argument("--disable-site-isolation-trials")
-      opts.add_argument("--no-sandbox")
-      opts.add_argument("--disable-dev-shm-usage")
+      opts.args << "--headless"
+      opts.args << "--disable-gpu"
+      opts.args << "--disable-site-isolation-trials"
+      opts.args << "--no-sandbox"
+      opts.args << "--desable-dev-shm-usage"
     end
-
-    Capybara::Selenium::Driver.new(app, **Hash[:browser => :chrome, options_key => browser_options])
+    Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
   end
 
   #   version = Capybara::Selenium::Driver.load_selenium
