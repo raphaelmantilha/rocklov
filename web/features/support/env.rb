@@ -26,7 +26,7 @@ when "chrome_headless"
       opts.args << "--no-sandbox" # eu incluí esta linha. É importante para rodar em headless (pincipalmente dentr de container)
       opts.args << "--desable-dev-shm-usage" # eu incluí esta linha. É fundamental para o Chrome usar os recursos
       # de cache em disco e não em memória. Memória é escassa dentro da VM quando usamos Docker Toolbox.
-      #opts.args << "--disable-site-isolation-trials"
+      opts.args << "--disable-site-isolation-trials"
     end
     Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
   end
