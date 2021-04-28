@@ -15,6 +15,22 @@ when "chrome"
 when "fire_headless"
   @driver = :selenium_headless
 when "chrome_headless"
+  # O código abaixo foi retirado do código-fonted o Capybara no Github e foi ajustado para funcionar com o "ruby web agent"
+  # que vamos usar para rodar os testes no Jenkins
+  Capybara.register_driver :selenium_chrome_headless do |app|
+    version = Capybara::Selenium::Driver.load_selenium
+    options_key = Capybara::Selenium::Driver::CAPS_VERSION.satisfied_by?(version) ? :capabilities : :options
+    browser_options = ::Selenium::WebDriver::Chrome::Options.new.tap do |opts|
+      opts.add_argument("--headless")
+      opts.add_argument("--disable-gpu")
+      opts.add_argument("--disable-site-isolation-trials")
+      opts.add_argument("--no-sandbox") # eu incluí esta linha. É importante para rodar em headless (pincipalmente dentr de container)
+      opts.add_argument("--disable-dev-shm-usage") # eu incluí esta linha. É fundamental para o Chrome usar os recursos
+                                                   # de cache em disco e não em memória. Memória é escassa dentro da VM quando usamos Docker Toolbox.
+    end
+    Capybara::Selenium::Driver.new(app, **{ :browser => :chrome, options_key => browser_options })
+  end
+
   @driver = :selenium_chrome_headless
 else
   raise "Navegador incorreto,  variável @driver está vazia :("
